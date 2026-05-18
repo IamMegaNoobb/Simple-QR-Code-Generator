@@ -4,10 +4,9 @@ from tkinter import ttk
 from tkinter import filedialog
 from PIL import ImageTk, Image
 import segno
+import time
 
 # TODO: artistic qr, file output naming, image resolution options
-
-#bg_name = str()
 
 def get_source():
     source = source_link.get()
@@ -21,12 +20,35 @@ def get_source():
 
 def generate_qr(source, file_output, output_type):
     qrcode = segno.make(str(source), micro=False)
+    print("created qrcode var")
     qrcode.save(str(file_output) + str(output_type), scale=10)
-    messagebox.showinfo("Complete", "QR Code has been generated.")
+    print(f"saved img as {file_output}{output_type}")
+    if file_output == "program_preview":
+        preview_img = ImageTk.PhotoImage(Image.open(f"program_preview{output_type}"))
+        print("created preview_img var")
+        print(preview_img)
+        global preview
+        print("created preview global var")
+        preview = Label(root, image=preview_img)
+        preview.image = preview_img
+        print("created preview label")
+        print(preview)
+        preview.pack()
+        print("packed preview")
+    else:
+        messagebox.showinfo("Complete", "QR Code has been generated.")
 
 def generate_artistic_qr(source, file_output, output_type, bg_name, scale_value):
     qrcode = segno.make(str(source), micro=False)
     qrcode.to_artistic(background=bg_name, target=str(file_output+output_type), scale=scale_value)
+    if file_output == "program_preview":
+        preview_img = ImageTk.PhotoImage(Image.open(f"program_preview{output_type}"))
+        global preview
+        preview = Label(root, image=preview_img)
+        preview.image = preview_img
+        preview.pack()
+    else:
+        messagebox.showinfo("Complete", "QR Code has been generated.")
 
 def import_background():
     file_path = filedialog.askopenfilename(title="Select a file", filetypes=[("Image files", "*.png *.jpg *.jpeg *.gif *.webp"), ("All files", "*.*")])
@@ -37,11 +59,13 @@ def import_background():
 def toggle_artistic():
     if activate_artistic.get():
         submit.pack_forget()
+        preview_button.pack_forget()
         label_title_artistic.pack()
         label_background.pack()
         import_background_button.pack()
         scale_slider.pack()
         submit.pack()
+        preview_button.pack()
     else:
         label_title_artistic.pack_forget()
         label_background.pack_forget()
@@ -49,11 +73,18 @@ def toggle_artistic():
         scale_slider.pack_forget()
 
 def preview_qr():
-    ...
+    preview.pack_forget()
+    source = source_link.get()
+    output_type = select_output_type.get()
+    if activate_artistic.get():
+        scale_value = int(scale_slider.get())
+        generate_artistic_qr(source, "program_preview", output_type, bg_name, scale_value)
+    else:
+        generate_qr(source, "program_preview", output_type)
     
 root = Tk(className='Simple QR Code Generator')
-root.geometry("700x500")
-root.resizable(False, False)
+#root.geometry("700x500")
+#root.resizable(False, False)
 title = Label(root, text="Simple QR Code Generator")
 title.pack()
 
@@ -84,6 +115,7 @@ select_output_type = ttk.Combobox(
 scale_slider = Scale(root, from_=0, to=10, orient="horizontal")
 submit = Button(root, text="Generate", command=get_source)
 preview_button = Button(root, text="Preview", command=preview_qr)
+preview = Label(root, text="YOUr iMaGe WiLl BE ShoWeD HeRE")
 label_source_link.pack()
 source_link.pack()
 label_file_output_name.pack()
@@ -93,5 +125,6 @@ select_output_type.pack()
 activate_artistic_button.pack()
 submit.pack()
 preview_button.pack()
+preview.pack()
 
 root.mainloop()
