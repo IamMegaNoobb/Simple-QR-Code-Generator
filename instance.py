@@ -9,11 +9,17 @@ def get_source():
     source = config.app.source.get()
     file_output = config.app.file_output_name.get()
     output_type = config.app.file_output_type.get()
-    if config.app.activate_artistic.get():
-        scale_value = int(config.app.scale_slider.get())
-        generate_artistic_qr(source, file_output, output_type, bg_name, scale_value)
+    if len(source) <= 0 or len(file_output) <= 0 or len(output_type) <= 0:
+        messagebox.showerror("Error", "You might forget to fill all the form, please try again.")
     else:
-        generate_qr(source, file_output, output_type)
+        if config.app.activate_artistic.get():
+            scale_value = int(config.app.scale_slider.get())
+            try:
+                generate_artistic_qr(source, file_output, output_type, bg_name, scale_value)
+            except NameError:
+                messagebox.showerror("Error", "Please select background image!")
+        else:
+            generate_qr(source, file_output, output_type)
 
 def generate_qr(source, file_output, output_type):
     qrcode = segno.make(str(source), micro=False)
@@ -55,11 +61,17 @@ def preview_qr():
     config.app.preview.grid_forget()
     source = config.app.source.get()
     output_type = config.app.file_output_type.get()
-    if config.app.activate_artistic.get():
-        scale_value = int(config.app.scale_slider.get())
-        generate_artistic_qr(source, "program_preview", output_type, bg_name, scale_value)
+    if len(source) <= 0 or len(output_type) <= 0:
+        messagebox.showerror("Error", "You might forget to fill all the form, please try again.\n source and output type.")
     else:
-        generate_qr(source, "program_preview", output_type)
+        if config.app.activate_artistic.get():
+            scale_value = int(config.app.scale_slider.get())
+            try:
+                generate_artistic_qr(source, "program_preview", output_type, bg_name, scale_value)
+            except NameError:
+                messagebox.showerror("Error", "Please select background image!")
+        else:
+            generate_qr(source, "program_preview", output_type)
 
 def show_preview():
     output_type = config.app.file_output_type.get()

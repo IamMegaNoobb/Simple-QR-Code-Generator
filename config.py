@@ -23,17 +23,18 @@ class App(Tk):
         # frame
         self.frame_left = Frame(self)
         self.frame_left.grid(row=1, column=0)
-        #self.frame_right = Frame(self)
-        #self.frame_right.grid(row=1, column=1, sticky="NSEW")
+
         # elements
+        """
         Label(self.frame_left, text="Select Source Type").pack()
         self.source_type = ttk.Combobox(
             self.frame_left,
             values=["URL", "Plain Text"],
             state="readonly"
         )
-
         self.source_type.pack()
+        """
+        
         Label(self.frame_left, text="Source").pack()
 
         self.source = Entry(self.frame_left)
@@ -67,9 +68,11 @@ class App(Tk):
         self.preview_button.pack()
 
         self.preview = Label(self, text="Your preview will be showed here.")
-        self.preview.grid(row=1, column=1, sticky="NSEW")
+        self.preview.grid(row=1, column=1)
 
 def start_instance():
     global app
+    print("Starting app.")
     app = App()
+    print("App object has created.")
     app.mainloop()
