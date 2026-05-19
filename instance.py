@@ -15,31 +15,19 @@ def get_source():
     else:
         generate_qr(source, file_output, output_type)
 
-# fix
 def generate_qr(source, file_output, output_type):
     qrcode = segno.make(str(source), micro=False)
     qrcode.save(str(file_output) + str(output_type), scale=10)
     if file_output == "program_preview":
-        preview_img = ImageTk.PhotoImage(Image.open(f"program_preview{output_type}"))
-        global preview
-        preview = config.app.preview
-        preview = Label(config.app.frame_right, image=preview_img)
-        preview.image = preview_img
-        preview.place(relx=0.5, rely=0.5, anchor=CENTER)
+        show_preview()
     else:
         messagebox.showinfo("Complete", "QR Code has been generated.")
 
-# fix
 def generate_artistic_qr(source, file_output, output_type, bg_name, scale_value):
     qrcode = segno.make(str(source), micro=False)
     qrcode.to_artistic(background=bg_name, target=str(file_output+output_type), scale=scale_value)
     if file_output == "program_preview":
-        preview_img = ImageTk.PhotoImage(Image.open(f"program_preview{output_type}"))
-        global preview
-        preview = config.app.preview
-        preview = Label(config.app.frame_right, image=preview_img)
-        preview.image = preview_img
-        preview.place(relx=0.5, rely=0.5, anchor=CENTER)
+        show_preview()
     else:
         messagebox.showinfo("Complete", "QR Code has been generated.")
 
@@ -64,7 +52,7 @@ def toggle_artistic():
         config.app.scale_slider.pack_forget()
 
 def preview_qr():
-    config.app.preview.place_forget()
+    config.app.preview.grid_forget()
     source = config.app.source.get()
     output_type = config.app.file_output_type.get()
     if config.app.activate_artistic.get():
@@ -72,3 +60,12 @@ def preview_qr():
         generate_artistic_qr(source, "program_preview", output_type, bg_name, scale_value)
     else:
         generate_qr(source, "program_preview", output_type)
+
+def show_preview():
+    output_type = config.app.file_output_type.get()
+    preview_img = ImageTk.PhotoImage(Image.open(f"program_preview{output_type}"))
+    global preview
+    preview = config.app.preview
+    preview = Label(config.app, image=preview_img)
+    preview.image = preview_img
+    preview.grid(row=1, column=1, sticky="NSEW")

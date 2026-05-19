@@ -9,6 +9,7 @@ class App(Tk):
         self.title("Simple QR Code Generator")
         self.geometry("700x500")
         self.resizable(False, False)
+        self.grid_propagate(False)
 
         self.title_label = Label(self, text="Simple QR Code Generator")
         self.title_label.grid(row=0, column=0, columnspan=2)
@@ -21,9 +22,9 @@ class App(Tk):
 
         # frame
         self.frame_left = Frame(self)
-        self.frame_left.grid(row=1, column=0, sticky="NSEW")
-        self.frame_right = Frame(self)
-        self.frame_right.grid(row=1, column=1, sticky="NSEW")
+        self.frame_left.grid(row=1, column=0)
+        #self.frame_right = Frame(self)
+        #self.frame_right.grid(row=1, column=1, sticky="NSEW")
         # elements
         Label(self.frame_left, text="Select Source Type").pack()
         self.source_type = ttk.Combobox(
@@ -65,8 +66,8 @@ class App(Tk):
         self.preview_button = Button(self.frame_left, text="Preview", command=preview_qr)
         self.preview_button.pack()
 
-        self.preview = Label(self.frame_right, text="Your preview will be showed here.")
-        self.preview.place(relx=0.5, rely=0.5, anchor=CENTER)
+        self.preview = Label(self, text="Your preview will be showed here.")
+        self.preview.grid(row=1, column=1, sticky="NSEW")
 
 def start_instance():
     global app
